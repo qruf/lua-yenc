@@ -1,0 +1,17 @@
+Source: lua-yenc
+Section: interpreters
+Priority: optional
+Maintainer: Q Ruf <qruf@b23.be>
+Build-Depends: debhelper (>= 9)
+Standards-Version: 3.9.3
+Homepage: http://github.com/qruf/lua-yenc
+Vcs-Browser: http://github.com/qruf/lua-yenc
+
+Package: lua-yenc
+Architecture: any
+Multi-Arch: same
+Pre-Depends: multiarch-support
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Provides: ${lua:Provides}
+XB-Lua-Versions: ${lua:Versions}
+Description: A yEnc encoder and decoder for Lua
