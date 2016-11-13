@@ -1,10 +1,10 @@
-package = "lunix"
+package = "yenc"
 version = "scm-0"
 
 description = {
-	summary = "Lua yEnc encoder/decoder",
+	summary  = "Lua yEnc encoder/decoder",
 	homepage = "https://github.com/qruf/lua-yenc",
-    license = "ISC",
+    license  = "ISC",
 }
 
 source = {
