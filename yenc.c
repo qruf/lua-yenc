@@ -35,14 +35,14 @@
 static int l_encode(lua_State * L) {
     size_t buflen = luaL_checknumber(L, 2);
     const uint8_t * buf = luaL_checklstring(L, 1, &buflen);
-    const uint8_t * bufp = buf;
     size_t linelen = luaL_checknumber(L, 3);
     size_t linepos = 0;
+    size_t i = 0;
     struct luaL_Buffer out;
     luaL_buffinit(L, &out);
 
-    for (int i = buflen; i > 0; i--) {
-        char chr = *bufp++ + 0x2A;
+    for (i = 0; i < buflen; i++) {
+        char chr = *(buf + i) + 0x2A;
         if (ESCAPE(chr, linepos, linelen)) {
             chr += 0x40;
             luaL_addchar(&out, '=');
@@ -50,7 +50,7 @@ static int l_encode(lua_State * L) {
         }
         luaL_addchar(&out, chr);
         linepos++;
-        if (linepos >= linelen || i == 1) {
+        if (linepos >= linelen || i == buflen - 1) {
             luaL_addlstring(&out, "\r\n", 2);
             linepos = 0;
         }
@@ -72,19 +72,20 @@ static int l_decode(lua_State * L) {
     const uint8_t * ibuf = luaL_checkstring(L, 1);
     size_t outlen = luaL_checknumber(L, 2);
     size_t buflen = lua_rawlen(L, 1);
-    uint8_t * out = malloc(outlen);
+    uint8_t * out = malloc(sizeof(uint8_t) * outlen);
     uint8_t * outp = out;
+    size_t i = 0;
 
-    for (int i = buflen; i > 0; i--) {
-        uint8_t chr = *ibuf++;
+    for (i = 0; i < buflen; i++) {
+        uint8_t chr = *(ibuf++);
         switch (chr) {
             case '\r': case '\n':
                 continue;
             case '=':
-                i--;
-                chr = *ibuf++ - 0x40;
+                i++;
+                chr = *(ibuf++) - 0x40;
         }
-        *outp++ = chr - 0x2A;
+        *(outp++) = chr - 0x2A;
     }
     lua_pushlstring(L, out, outlen);
     free(out);
