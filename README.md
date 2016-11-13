@@ -18,7 +18,7 @@ On Debian, Ubuntu and other apt-based distros:
 
 ### yenc.encode(buf, inlen, linelen, crc)
 
-Encodes the input string *buf* and returns it. *outlen* is the size of the decoded part. Newlines
+Encodes the input string *buf* and returns it. *inlen* is the size of the decoded part. Newlines
 will be inserted after every *linelen* characters.
 
 If *crc* is a number, both the crc32 of this part and the combined crc32 are also returned.
