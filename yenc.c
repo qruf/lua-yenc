@@ -33,9 +33,9 @@
 #define ESCAPE(c,p,l) (ESCAPE_ALL(c) || (p == 0 && ESCAPE_BOL(c)) || (p + 1 >= l && ESCAPE_EOL(c)))
 
 static int l_encode(lua_State * L) {
-    size_t buflen = luaL_checknumber(L, 2);
+    size_t buflen = luaL_checkinteger(L, 2);
     const uint8_t * buf = luaL_checklstring(L, 1, &buflen);
-    size_t linelen = luaL_checknumber(L, 3);
+    size_t linelen = luaL_checkinteger(L, 3);
     size_t linepos = 0;
     size_t i = 0;
     struct luaL_Buffer out;
@@ -58,10 +58,10 @@ static int l_encode(lua_State * L) {
     luaL_pushresult(&out);
 
     if (lua_type(L, 4) == LUA_TNUMBER) {
-        unsigned long icrc = lua_tonumber(L, 4);
+        unsigned long icrc = lua_tointeger(L, 4);
         unsigned long ocrc = crc32(0, buf, buflen);
-        lua_pushnumber(L, ocrc);
-        lua_pushnumber(L, crc32_combine(icrc, ocrc, buflen));
+        lua_pushinteger(L, ocrc);
+        lua_pushinteger(L, crc32_combine(icrc, ocrc, buflen));
         return 3;
     }
 
@@ -70,7 +70,7 @@ static int l_encode(lua_State * L) {
 
 static int l_decode(lua_State * L) {
     const uint8_t * ibuf = luaL_checkstring(L, 1);
-    size_t outlen = luaL_checknumber(L, 2);
+    size_t outlen = luaL_checkinteger(L, 2);
     size_t buflen = lua_rawlen(L, 1);
     uint8_t * out = malloc(sizeof(uint8_t) * outlen);
     uint8_t * outp = out;
@@ -91,10 +91,10 @@ static int l_decode(lua_State * L) {
     free(out);
 
     if (lua_type(L, 3) == LUA_TNUMBER) {
-        unsigned long icrc = lua_tonumber(L, 4);
+        unsigned long icrc = lua_tointeger(L, 4);
         unsigned long ocrc = crc32(0, out, outlen);
-        lua_pushnumber(L, ocrc);
-        lua_pushnumber(L, crc32_combine(icrc, ocrc, outlen));
+        lua_pushinteger(L, ocrc);
+        lua_pushinteger(L, crc32_combine(icrc, ocrc, outlen));
         return 3;
     }
 
@@ -102,20 +102,20 @@ static int l_decode(lua_State * L) {
 }
 
 static int l_crc32(lua_State * L) {
-    size_t len = luaL_checknumber(L, 2);
+    size_t len = luaL_checkinteger(L, 2);
     const Bytef * buf = luaL_checklstring(L, 1, &len);
-    uLong crc = luaL_optnumber(L, 3, 0);
+    uLong crc = luaL_optinteger(L, 3, 0);
     uLong out = crc32(crc, buf, len);
-    lua_pushnumber(L, out);
+    lua_pushinteger(L, out);
     return 1;
 }
 
 static int l_crc32_combine(lua_State * L) {
-    uLong crc1 = luaL_checknumber(L, 1);
-    uLong crc2 = luaL_checknumber(L, 2);
-    z_off_t len = luaL_checknumber(L, 3);
+    uLong crc1 = luaL_checkinteger(L, 1);
+    uLong crc2 = luaL_checkinteger(L, 2);
+    z_off_t len = luaL_checkinteger(L, 3);
     uLong out = crc32_combine(crc1, crc2, len);
-    lua_pushnumber(L, out);
+    lua_pushinteger(L, out);
     return 1;
 }
 
