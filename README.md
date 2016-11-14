@@ -1,6 +1,6 @@
 # lua-yenc
 
-A [yEnc](http://www.yenc.org/) encoder and decoder for Lua.
+A [yEnc](http://www.yenc.org/) encoder and decoder for Lua 5.1, 5.2, 5.3 and LuaJIT.
 
 ## Installation
 
