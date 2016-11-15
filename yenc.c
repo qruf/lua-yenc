@@ -60,8 +60,8 @@ static int l_encode(lua_State * L) {
     if (lua_type(L, 4) == LUA_TNUMBER) {
         unsigned long icrc = lua_tointeger(L, 4);
         unsigned long ocrc = crc32(0, buf, buflen);
-        lua_pushunsigned(L, ocrc);
-        lua_pushunsigned(L, crc32_combine(icrc, ocrc, buflen));
+        lua_pushnumber(L, ocrc);
+        lua_pushnumber(L, crc32_combine(icrc, ocrc, buflen));
         return 3;
     }
 
@@ -93,8 +93,8 @@ static int l_decode(lua_State * L) {
     if (lua_type(L, 3) == LUA_TNUMBER) {
         unsigned long icrc = lua_tointeger(L, 4);
         unsigned long ocrc = crc32(0, out, outlen);
-        lua_pushunsigned(L, ocrc);
-        lua_pushunsigned(L, crc32_combine(icrc, ocrc, outlen));
+        lua_pushnumber(L, ocrc);
+        lua_pushnumber(L, crc32_combine(icrc, ocrc, outlen));
         free(out);
         return 3;
     }
@@ -108,7 +108,7 @@ static int l_crc32(lua_State * L) {
     const Bytef * buf = luaL_checklstring(L, 1, &len);
     uLong crc = luaL_optinteger(L, 3, 0);
     uLong out = crc32(crc, buf, len);
-    lua_pushunsigned(L, out);
+    lua_pushnumber(L, out);
     return 1;
 }
 
@@ -117,7 +117,7 @@ static int l_crc32_combine(lua_State * L) {
     uLong crc2 = luaL_checkinteger(L, 2);
     z_off_t len = luaL_checkinteger(L, 3);
     uLong out = crc32_combine(crc1, crc2, len);
-    lua_pushunsigned(L, out);
+    lua_pushnumber(L, out);
     return 1;
 }
 
