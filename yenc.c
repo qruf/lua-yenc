@@ -33,16 +33,16 @@
 #define ESCAPE(c,p,l) (ESCAPE_ALL(c) || (p == 0 && ESCAPE_BOL(c)) || (p + 1 >= l && ESCAPE_EOL(c)))
 
 static int l_encode(lua_State * L) {
-    size_t buflen = luaL_checkinteger(L, 2);
+    uint32_t buflen = luaL_checkinteger(L, 2);
     const uint8_t * buf = luaL_checklstring(L, 1, &buflen);
-    size_t linelen = luaL_checkinteger(L, 3);
-    size_t linepos = 0;
-    size_t i = 0;
+    uint32_t linelen = luaL_checkinteger(L, 3);
+    uint32_t linepos = 0;
+    uint32_t i = 0;
     struct luaL_Buffer out;
     luaL_buffinit(L, &out);
 
     for (i = 0; i < buflen; i++) {
-        char chr = *(buf + i) + 0x2A;
+        uint8_t chr = *(buf + i) + 0x2A;
         if (ESCAPE(chr, linepos, linelen)) {
             chr += 0x40;
             luaL_addchar(&out, '=');
@@ -60,8 +60,8 @@ static int l_encode(lua_State * L) {
     if (lua_type(L, 4) == LUA_TNUMBER) {
         unsigned long icrc = lua_tointeger(L, 4);
         unsigned long ocrc = crc32(0, buf, buflen);
-        lua_pushinteger(L, ocrc);
-        lua_pushinteger(L, crc32_combine(icrc, ocrc, buflen));
+        lua_pushunsigned(L, ocrc);
+        lua_pushunsigned(L, crc32_combine(icrc, ocrc, buflen));
         return 3;
     }
 
@@ -70,11 +70,11 @@ static int l_encode(lua_State * L) {
 
 static int l_decode(lua_State * L) {
     const uint8_t * ibuf = luaL_checkstring(L, 1);
-    size_t outlen = luaL_checkinteger(L, 2);
-    size_t buflen = lua_rawlen(L, 1);
+    uint32_t buflen = lua_rawlen(L, 1);
+    uint32_t outlen = luaL_checkinteger(L, 2);
     uint8_t * out = malloc(sizeof(uint8_t) * outlen);
     uint8_t * outp = out;
-    size_t i = 0;
+    uint32_t i;
 
     for (i = 0; i < buflen; i++) {
         uint8_t chr = *(ibuf++);
@@ -87,17 +87,19 @@ static int l_decode(lua_State * L) {
         }
         *(outp++) = chr - 0x2A;
     }
+
     lua_pushlstring(L, out, outlen);
-    free(out);
 
     if (lua_type(L, 3) == LUA_TNUMBER) {
         unsigned long icrc = lua_tointeger(L, 4);
         unsigned long ocrc = crc32(0, out, outlen);
-        lua_pushinteger(L, ocrc);
-        lua_pushinteger(L, crc32_combine(icrc, ocrc, outlen));
+        lua_pushunsigned(L, ocrc);
+        lua_pushunsigned(L, crc32_combine(icrc, ocrc, outlen));
+        free(out);
         return 3;
     }
 
+    free(out);
     return 1;
 }
 
@@ -106,7 +108,7 @@ static int l_crc32(lua_State * L) {
     const Bytef * buf = luaL_checklstring(L, 1, &len);
     uLong crc = luaL_optinteger(L, 3, 0);
     uLong out = crc32(crc, buf, len);
-    lua_pushinteger(L, out);
+    lua_pushunsigned(L, out);
     return 1;
 }
 
@@ -115,7 +117,7 @@ static int l_crc32_combine(lua_State * L) {
     uLong crc2 = luaL_checkinteger(L, 2);
     z_off_t len = luaL_checkinteger(L, 3);
     uLong out = crc32_combine(crc1, crc2, len);
-    lua_pushinteger(L, out);
+    lua_pushunsigned(L, out);
     return 1;
 }
 
