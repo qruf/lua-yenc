@@ -1,3 +1,4 @@
+package.cpath  = "./?.so"
 local assert   = require "test.assert"
 local yenc     = require "yenc"
 
@@ -18,16 +19,19 @@ assert.equal(crc_cmb, 0xD612F035)
 
 -- yenc.encode
 local enc, crc_enc = yenc.encode(src, 16384, 128, 0)
+if arg[1] == "-o" then
+    io.write(enc)
+end
 assert(enc == ref)
-assert.equal(crc_enc, crc_ref)
+assert.equal(crc_enc, 0x212D3568)
 
-local enc, crc_enc, crc_cmb = yenc.encode(src, 16384, 128, crc_enc)
+enc, crc_enc, crc_cmb = yenc.encode(src, 16384, 128, crc_enc)
 assert(enc == ref)
-assert.equal(crc_enc, crc_ref)
+assert.equal(crc_enc, 0x212D3568)
 assert.equal(crc_cmb, 0xD612F035)
 
 -- yenc.decode
 local dec, crc_dec = yenc.decode(enc, 16384, 0)
 assert(src == dec)
-assert.equal(crc_ref, crc_dec)
+assert.equal(crc_dec, 0x212D3568)
 
