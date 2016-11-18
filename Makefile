@@ -14,7 +14,7 @@ LDFLAGS  := -shared
 $(LIBNAME): yenc.c vendor/zlib/crc32.c
 	$(CC) $(CFLAGS) $(CPPFLAGS) $(LDFLAGS) -o $@ $^
 
-test: yenc.so
+test: $(LIBNAME)
 	$(LUA) test/yenc.lua
 
 install: $(LIBNAME)
