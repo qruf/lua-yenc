@@ -6,7 +6,7 @@ LUAPC   = lua$(LUAVER)
 
 LIBNAME  := yenc.so
 LIBDIR   := $(PREFIX)/lib/lua/$(LUAVER)
-CPPFLAGS := -Wall -fPIC `$(PKGCONF) --cflags $(LUAPC)`
+CPPFLAGS := -Wall -Wextra -pedantic -Wno-pointer-sign -fPIC `$(PKGCONF) --cflags $(LUAPC)`
 LDFLAGS  := -shared
 
 .PHONY: all test install debian clean
@@ -20,6 +20,7 @@ test: yenc.so
 install: $(LIBNAME)
 	mkdir -p $(LIBDIR)
 	cp $(LIBNAME) $(LIBDIR)
+	chmod 644 $(LIBDIR)/$(LIBNAME)
 
 debian:
 	dpkg-buildpackage -us -uc
