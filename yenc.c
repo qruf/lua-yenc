@@ -73,7 +73,7 @@ static int l_decode(lua_State * L) {
     const uint8_t * ibuf = luaL_checkstring(L, 1);
     size_t buflen = lua_rawlen(L, 1);
     size_t outlen = luaL_checkinteger(L, 2);
-    uint8_t * out = malloc(sizeof(uint8_t) * outlen);
+    uint8_t * out = lua_newuserdata(L, sizeof(uint8_t) * outlen);
     uint8_t * outp = out;
 
     while (buflen--) {
@@ -95,11 +95,9 @@ static int l_decode(lua_State * L) {
         unsigned long ocrc = crc32(0, out, outlen);
         lua_pushnumber(L, ocrc);
         lua_pushnumber(L, crc32_combine(icrc, ocrc, outlen));
-        free(out);
         return 3;
     }
 
-    free(out);
     return 1;
 }
 
