@@ -49,12 +49,12 @@ static int l_encode(lua_State * L) {
             linepos++;
         }
         luaL_addchar(&out, chr);
-        linepos++;
-        if (linepos >= linelen || i == buflen - 1) {
+        i++;
+        if (++linepos >= linelen || i == buflen) {
             luaL_addlstring(&out, "\r\n", 2);
             linepos = 0;
         }
-    } while (++i < buflen);
+    } while (i < buflen);
 
     luaL_pushresult(&out);
 
