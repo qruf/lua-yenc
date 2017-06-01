@@ -59,8 +59,8 @@ static int l_encode(lua_State * L) {
     luaL_pushresult(&out);
 
     if (lua_type(L, 4) == LUA_TNUMBER) {
-        unsigned long icrc = lua_tointeger(L, 4);
-        unsigned long ocrc = crc32(0, buf, buflen);
+        uLong icrc = lua_tointeger(L, 4);
+        uLong ocrc = crc32(0, buf, buflen);
         lua_pushnumber(L, ocrc);
         lua_pushnumber(L, crc32_combine(icrc, ocrc, buflen));
         return 3;
@@ -91,8 +91,8 @@ static int l_decode(lua_State * L) {
     lua_pushlstring(L, out, outlen);
 
     if (lua_type(L, 3) == LUA_TNUMBER) {
-        unsigned long icrc = lua_tointeger(L, 4);
-        unsigned long ocrc = crc32(0, out, outlen);
+        uLong icrc = lua_tointeger(L, 4);
+        uLong ocrc = crc32(0, out, outlen);
         lua_pushnumber(L, ocrc);
         lua_pushnumber(L, crc32_combine(icrc, ocrc, outlen));
         return 3;
